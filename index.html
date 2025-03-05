@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RacavendettaStore </title>
+  
+    <link rel="website icon" type="png" href="Logo.webp" style="border-radius: 12px;">
+
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .hidden {
+            display: none;
+        }
+        
+        button {
+            margin: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <img src="Logo.webp" alt="Logo" class="logo">
+        <h1 class="judul">RAVENCELL</h1>
+        <button id="logout-button" class="profile-icon" onclick="logout()">Log Out</button>
+        <button class="profile-icon2" id="toggle-dark-mode">🌙</button>
+    </header>
+    <main>
+        <section id="registerFormSection">
+            <h2>Daftar Akun</h2>
+            <input type="text" id="registerUsername" placeholder="Username" class="input-field">
+            <input type="email" id="registerEmail" placeholder="Email" class="input-field">
+            <input type="password" id="registerPassword" placeholder="Password" class="input-field">
+            <label>
+                <input type="checkbox" id="showPasswordCheckbox" onclick="togglePasswordVisibility()"> Show Password
+            </label>
+            <button class="btn-primary" onclick="register()">Daftar</button>
+        </section>
+        <section id="shortcutSection" class="hidden">
+            <h2>Selamat datang, <span id="userGreeting"></span>!</h2>
+            <button class="shortcut-btn" onclick="showPulsaForm()">Pulsa</button>
+            <button class="shortcut-btn" onclick="showPaketDataForm()">Paket Data</button>
+            <button class="shortcut-btn" onclick="showTokenForm()">Token Listrik</button>
+            <button class="shortcut-btn" onclick="showEMoneyForm()">E-Money</button>
+        </section>
+
+        <section id="pulsaForm" class="hidden">
+            <h2>Isi Pulsa</h2>
+            <input type="text" id="phoneNumber" placeholder="Masukkan Nomor HP" class="input-field">
+            <select id="nominalPulsa" class="input-field" onchange="updateTotalPrice('pulsaForm', 'nominalPulsa', 'totalPricePulsa')">
+                <option value="0"> Rp 0</option>
+                <option value="5000">Rp 5.000</option>
+                <option value="10000">Rp 10.000</option>
+                <option value="20000">Rp 20.000</option>
+            </select>
+            <p>Total Harga: <span id="totalPricePulsa">Rp 0</span></p>
+            <button class="btn-primary" onclick="goToPayment('pulsaForm')">Lanjut Pembayaran</button>
+            <button class="back" onclick="back('pulsaForm')">Kembali</button>
+        </section>
+
+        <section id="paketDataForm" class="hidden">
+            <h2>Paket Data</h2>
+            <input type="text" id="dataPhoneNumber" placeholder="Masukkan Nomor HP" class="input-field">
+            <select id="nominalData" class="input-field" onchange="updateTotalPrice('paketDataForm', 'nominalData', 'totalPriceData')">
+                <option value="0">0</option>
+                <option value="10000">1GB - Rp 12.000 15 hari</option>
+                <option value="20000">2GB - Rp 17.000 15 hari</option>
+                <option value="22000">5GB - Rp 22.000 15 hari</option>
+                <option value="18000">1GB - Rp 18.000 30 hari</option>
+                <option value="22000">2GB - Rp 22.000 30 hari</option>
+            </select>
+            <p>Total Harga: <span id="totalPriceData">Rp 0</span></p>
+            <button class="btn-primary" onclick="goToPayment('paketDataForm')">Lanjut Pembayaran</button>
+            <button class="back" onclick="back('paketDataForm')">Kembali</button>
+        </section>
+
+        <section id="tokenForm" class="hidden">
+            <h2>Token Listrik</h2>
+            <input type="text" id="meterNumber" placeholder="Masukkan Nomor Meter" class="input-field">
+            <select id="nominalToken" class="input-field" onchange="updateTotalPrice('tokenForm', 'nominalToken', 'totalPriceToken')">
+                <option value="0">0</option>
+                <option value="23000">20K - Rp 23.000</option>
+                <option value="53000">50K - Rp 53.000</option>
+                <option value="103000">100K - Rp 103.000</option>
+            </select>
+            <p>Total Harga: <span id="totalPriceToken">Rp 0</span></p>
+            <button class="btn-primary" onclick="goToPayment('tokenForm')">Lanjut Pembayaran</button>
+            <button class="back" onclick="back('tokenForm')">Kembali</button>
+        </section>
+
+        <section id="eMoneyForm" class="hidden">
+            <h2>E-Money</h2>
+            <input type="text" id="eMoneyNumber" placeholder="Masukkan Nomor E-Money" class="input-field">
+            <select id="nominalEMoney" class="input-field" onchange="updateTotalPrice('eMoneyForm', 'nominalEMoney', 'totalPriceEMoney')">
+                <option value="0">Rp 0</option>
+                <option value="15000">Rp 12.000</option>
+                <option value="55000">Rp 52.000</option>
+                <option value="105000">Rp 102.000</option>
+            </select>
+            <p>Total Harga: <span id="totalPriceEMoney">Rp 0</span></p>
+            <button class="btn-primary" onclick="goToPayment('eMoneyForm')">Lanjut Pembayaran</button>
+            <button class="back" onclick="back('eMoneyForm')">Kembali</button>
+        </section>
+
+        <section id="paymentForm" class="hidden">
+            <h2>Pembayaran</h2>
+            <p>Nominal: <span id="paymentAmount">Rp 0</span></p>
+            <input type="text" id="cardNumber" placeholder="Nomor Kartu" class="input-field">
+            <input type="text" id="cardName" placeholder="Nama pada Kartu" class="input-field">
+            <input type="month" id="cardExpiry" class="input-field">
+            <input type="password" id="cardCVV" placeholder="CVV" class="input-field">
+            <label>
+                <input type="checkbox" id="showCVVCheckbox" onclick="toggleCVVVisibility()"> Show CVV
+            </label>
+            <button class="btn-primary" onclick="confirmPayment()">Bayar Sekarang</button>
+        </section>
+
+        <section id="receiptForm" class="hidden">
+            <h2>Bukti Pembayaran</h2>
+            <p>Jumlah yang dibayar: <span id="receiptAmount">Rp 0</span></p>
+            <p>Tanggal Transaksi: <span id="receiptDate"></span></p>
+            <button class="btn-primary" onclick="hideReceiptForm()">Selesai</button>
+        </section>
+
+        <section id="transactionHistorySection" class="hidden">
+            <h3>Riwayat Transaksi</h3>
+            <ul id="transactionHistoryList"></ul>
+            <button class="btn-primary" onclick="showTransactionHistory()">Lihat Riwayat</button>
+        </section>
+
+    </main>
+    <footer>
+        <p>&copy; 2024 RACACELLL - Semua Hak Dilindungi. Dibuat dengan ❤ di Jakarta.</p>
+        <nav>
+            <li><img src="download.png" alt="logo" class="logo"><a href="https://www.instagram.com/itsmenobi_4/" target="_blank">Tentang Kami</a></li>
+            <li><img src="whatsapp.png" alt="logo" class="logo"><a href="https://wa.me/6282172098602" target="_blank">Hubungi</a></li>
+            <li><img src="cust service.png" alt="logo" class="logo"><a href="#" onclick="openTermsModal()">Ketentuan Layanan</a></li>
+        </nav>
+        <div id="termsModal" class="modal hidden">
+            <div class="modal-content">
+
+                <h2>Ketentuan Layanan<a class="close-btn" onclick="closeTermsModal()">x</a></h2>
+                <p>
+                    Selamat datang di RACACELLL. Dengan menggunakan layanan kami, Anda setuju dengan syarat dan ketentuan berikut:
+                </p>
+                <ul>
+                    <li>Data yang Anda masukkan akan kami jaga kerahasiaannya.</li>
+                    <li>Semua transaksi dianggap sah jika pembayaran telah berhasil.</li>
+                    <li>Harga dapat berubah sewaktu-waktu tanpa pemberitahuan.</li>
+                </ul>
+                <p>Untuk informasi lebih lanjut, silakan hubungi layanan pelanggan kami.</p>
+                <p>Mohon maaf apabila ada kekurangan karena kami masih dalam tahap pembelajaran.</p>
+            </div>
+        </div>
+    </footer>
+    <script src="Script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</body>
+
+</html>
